@@ -105,6 +105,7 @@ export function AccountFormPage({ onNavigate }: AccountFormPageProps) {
           placeholder="0,00"
           valueMinor={openingBalanceMinor}
           onChange={setOpeningBalanceMinor}
+                    showSignToggle={false}
           required
         />
 

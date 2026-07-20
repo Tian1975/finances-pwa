@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TransactionRepository } from '../../modules/transactions/TransactionRepository';
 import { AccountRepository } from '../../modules/accounts/AccountRepository';
 import { MoneyInput } from '../components/MoneyInput';
@@ -28,7 +28,7 @@ export function TransactionFormPage({
     setError(null);
 
     if (amountMinor === null) {
-      setError('Introdueix un import vàlid, per exemple -12,50 o 2150.');
+      setError('Introdueix un import vàlid, per exemple 12,50.');
       return;
     }
 
@@ -70,9 +70,10 @@ export function TransactionFormPage({
         </button>
       </header>
 
-      <h1 className="text-xl font-semibold text-ink mb-6">Nou moviment</h1>
+      <h1 className="text-xl font-semibold text-ink mb-1">Nou moviment</h1>
+      <AccountName accountId={accountId} />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <Field label="Data">
           <input
             type="date"
@@ -85,8 +86,7 @@ export function TransactionFormPage({
 
         <MoneyInput
           label="Import (€)"
-          hint="Negatiu per a despeses, positiu per a ingressos"
-          placeholder="-43,50"
+          placeholder="43,50"
           valueMinor={amountMinor}
           onChange={setAmountMinor}
           required
@@ -122,6 +122,22 @@ export function TransactionFormPage({
         </button>
       </form>
     </div>
+  );
+}
+
+function AccountName({ accountId }: { accountId: string }) {
+  const [name, setName] = useState<string | null>(null);
+
+  useEffect(() => {
+    accountRepository.findById(accountId).then((account) => {
+      setName(account?.name ?? 'Compte desconegut');
+    });
+  }, [accountId]);
+
+  return (
+    <p className="text-sm text-muted">
+      Al compte: <span className="font-medium text-ledger">{name ?? '...'}</span>
+    </p>
   );
 }
 
